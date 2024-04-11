@@ -1,0 +1,30 @@
+﻿version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - db
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Password1.
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  proxy:
+    image: caddy:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./data/data:/data
+      - ./data/config:/config
+      - ./data/Caddyfile:/etc/caddy/Caddyfile
+    depends_on:
+      - web
+volumes:
+  postgres_data:
